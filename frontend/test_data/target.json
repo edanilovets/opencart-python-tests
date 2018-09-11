@@ -1,0 +1,9 @@
+{
+  "web": {
+    "baseUrl": "http://localhost:8080/opencart/"
+  },
+  "web_admin": {
+    "username": "admin",
+    "password": "admin"
+  }
+}
