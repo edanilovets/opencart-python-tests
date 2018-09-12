@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 
 
 class Application:
@@ -10,11 +11,27 @@ class Application:
         wd = self.wd
         wd.get("http://localhost:8080/opencart/")
 
+    def check_exists_by_link_text(self, link_text):
+        wd = self.wd
+        try:
+            wd.find_element_by_link_text(link_text)
+        except NoSuchElementException:
+            return False
+        return True
+
     def create_customer(self, customer, subscribe):
         wd = self.wd
         self.open_home_page()
         wd.find_element_by_xpath("//div[@id='top-links']/ul/li[2]/a").click()
-        wd.find_element_by_link_text("Register").click()
+
+        if self.check_exists_by_link_text("Register"):
+            wd.find_element_by_link_text("Register").click()
+        elif self.check_exists_by_link_text("Logout"):
+            wd.find_element_by_link_text("Logout").click()
+            wd.find_element_by_xpath("//div[@id='top-links']/ul/li[2]/a").click()
+            wd.find_element_by_link_text("Register").click()
+        else:
+            raise NoSuchElementException("Cannot find Register/Logout links. Check you UI.")
 
         def type_by_name(selector, text):
             wd.find_element_by_name(selector).click()

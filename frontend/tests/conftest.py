@@ -13,14 +13,14 @@ from frontend.application.db import Db
 #     return fixture
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def app():
     fixture = Application()
     yield fixture
     fixture.destroy()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def db():
     db_fixture = Db("localhost", "opencart", "root", "")
     yield db_fixture
