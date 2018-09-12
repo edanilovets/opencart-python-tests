@@ -22,5 +22,16 @@ class Db:
             cursor.close()
         return customer_list
 
+    def delete_customer_by_name_and_lastname(self, customer):
+        cursor = self.connection.cursor()
+        try:
+            query = "DELETE FROM oc_customer WHERE firstname = '{}' AND lastname = '{}'".format(customer.firstname,
+                                                                                                customer.lastname)
+            cursor.execute("set autocommit = 1")
+            cursor.execute(query)
+            print("{} was deleted from db.".format(customer.__repr__()))
+        finally:
+            cursor.close()
+
     def destroy(self):
         self.connection.close()
