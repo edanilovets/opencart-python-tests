@@ -1,0 +1,18 @@
+{
+  "top_line": {
+    "my_account": "//div[@id='top-links']/ul/li[2]/a",
+    "register": "//div[@id='top-links']/ul/li[2]/ul/li[1]/a",
+    "logout": "//div[@id='top-links']/ul/li[2]/ul/li[5]/a"
+  },
+  "account": {
+    "subscribe_yes": "//div[@id='content']/form/fieldset[3]/div/div/label[1]/input",
+    "btn_continue": "//div[@class='buttons']/div/input[@value='Continue']",
+    "checkbox_agree": "//input[@name='agree']",
+    "warning_firstname": "//fieldset[@id='account']/div[2]/div/div[@class='text-danger']",
+    "warning_lastname": "//fieldset[@id='account']/div[3]/div/div[@class='text-danger']",
+    "warning_email": "//fieldset[@id='account']/div[4]/div/div[@class='text-danger']",
+    "warning_phone": "//fieldset[@id='account']/div[5]/div/div[@class='text-danger']",
+    "warning_password": "//input[@id='input-password']/following-sibling::div[@class='text-danger']",
+    "warning_confirm": "//input[@id='input-confirm']/following-sibling::div[@class='text-danger']"
+  }
+}
