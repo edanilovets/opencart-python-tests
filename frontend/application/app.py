@@ -19,7 +19,7 @@ class Application:
             return False
         return True
 
-    def create_customer(self, customer, subscribe):
+    def create_customer(self, customer, subscribe=False):
         wd = self.wd
         self.open_home_page()
         wd.find_element_by_xpath("//div[@id='top-links']/ul/li[2]/a").click()

@@ -29,7 +29,7 @@ class Db:
                                                                                                 customer.lastname)
             cursor.execute("set autocommit = 1")
             cursor.execute(query)
-            print("{} was deleted from db.".format(customer.__repr__()))
+            print("\n{} was deleted from db.".format(customer.__repr__()))
         finally:
             cursor.close()
 
