@@ -2,6 +2,7 @@
   "top_line": {
     "my_account": "//div[@id='top-links']/ul/li[2]/a",
     "register": "//div[@id='top-links']/ul/li[2]/ul/li[1]/a",
+    "login": "//div[@id='top-links']/ul/li[2]/ul/li[2]/a",
     "logout": "//div[@id='top-links']/ul/li[2]/ul/li[5]/a"
   },
   "account": {
@@ -14,5 +15,10 @@
     "warning_phone": "//fieldset[@id='account']/div[5]/div/div[@class='text-danger']",
     "warning_password": "//input[@id='input-password']/following-sibling::div[@class='text-danger']",
     "warning_confirm": "//input[@id='input-confirm']/following-sibling::div[@class='text-danger']"
+  },
+  "login": {
+    "input_email": "//input[@id='input-email']",
+    "input_password": "//input[@id='input-password']",
+    "btn_login": "//input[@value='Login']"
   }
 }

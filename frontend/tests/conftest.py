@@ -1,4 +1,5 @@
 import pytest
+import json
 from frontend.application.app import Application
 from frontend.application.db import Db
 
@@ -13,9 +14,16 @@ from frontend.application.db import Db
 #     return fixture
 
 
+def load_xpath_config(file):
+    with open(file, 'r') as f:
+        config = json.load(f)
+    return config
+
+
 @pytest.fixture(scope="session")
 def app():
-    fixture = Application()
+    config = load_xpath_config("xpath.json")
+    fixture = Application(config)
     fixture.maximize_window()
     yield fixture
     fixture.destroy()

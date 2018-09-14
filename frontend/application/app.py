@@ -5,22 +5,13 @@ import json
 
 class Application:
 
-    def __init__(self):
+    def __init__(self, config):
         self.wd = webdriver.Chrome()
+        self.config = config
 
     def maximize_window(self):
         wd = self.wd
         wd.maximize_window()
-
-    @staticmethod
-    def load_config(file):
-        with open(file, 'r') as f:
-            config = json.load(f)
-        return config
-
-    def open_home_page(self):
-        wd = self.wd
-        wd.get("http://localhost:8080/opencart/")
 
     def check_exists_by_link_text(self, link_text):
         wd = self.wd
@@ -38,10 +29,43 @@ class Application:
             return False
         return True
 
+    def open_home_page(self):
+        wd = self.wd
+        wd.get("http://localhost:8080/opencart/")
+
+    def login(self, customer):
+        wd = self.wd
+        xpath = self.config
+        self.open_home_page()
+        wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
+        if self.check_exists_by_link_text("Login"):
+            wd.find_element_by_xpath(xpath['top_line']['login']).click()
+        elif self.check_exists_by_link_text("Logout"):
+            wd.find_element_by_xpath(xpath['top_line']['logout']).click()
+            wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
+            wd.find_element_by_xpath(xpath['top_line']['login']).click()
+        else:
+            raise NoSuchElementException("Cannot find Login/Logout links. Check your UI.")
+
+        wd.find_element_by_xpath(xpath['login']['input_email']).send_keys(customer.email)
+        wd.find_element_by_xpath(xpath['login']['input_password']).send_keys(customer.password)
+        wd.find_element_by_xpath(xpath['login']['btn_login']).click()
+        return True
+
+    def logout(self):
+        wd = self.wd
+        xpath = self.config
+        self.open_home_page()
+        wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
+        if self.check_exists_by_link_text("Logout"):
+            wd.find_element_by_xpath(xpath['top_line']['logout']).click()
+        else:
+            raise NoSuchElementException("You are not logged in.")
+
     def create_customer(self, customer, subscribe=False):
         wd = self.wd
         self.open_home_page()
-        xpath = self.load_config("xpath.json")
+        xpath = self.config
 
         wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
 
@@ -74,7 +98,7 @@ class Application:
 
     def is_warning_message_showed(self, field_name):
         wd = self.wd
-        xpath = self.load_config("xpath.json")
+        xpath = self.config
         if field_name == "Password":
             warn_message = wd.find_element_by_xpath(xpath['account']['warning_password']).text
             if warn_message == "Password must be between 4 and 20 characters!":
