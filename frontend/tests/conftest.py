@@ -16,6 +16,7 @@ from frontend.application.db import Db
 @pytest.fixture(scope="session")
 def app():
     fixture = Application()
+    fixture.maximize_window()
     yield fixture
     fixture.destroy()
 

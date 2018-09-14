@@ -8,6 +8,10 @@ class Application:
     def __init__(self):
         self.wd = webdriver.Chrome()
 
+    def maximize_window(self):
+        wd = self.wd
+        wd.maximize_window()
+
     @staticmethod
     def load_config(file):
         with open(file, 'r') as f:
