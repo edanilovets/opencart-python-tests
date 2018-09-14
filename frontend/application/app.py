@@ -8,7 +8,8 @@ class Application:
     def __init__(self):
         self.wd = webdriver.Chrome()
 
-    def load_config(self, file):
+    @staticmethod
+    def load_config(file):
         with open(file, 'r') as f:
             config = json.load(f)
         return config

@@ -27,6 +27,35 @@ test_data_password_negative = [
     for i in range(3)
 ]
 
+# test data for empty combinations
+test_data_empty_combinations = [
+    Customer("", "", "", "", ""),
+    Customer("", "", "", "+380989990066", ""),
+    Customer("", "", "", "+380989990066", "111111"),
+    Customer("", "", "john.email@gmail.com", "", ""),
+    Customer("", "", "john.email@gmail.com", "", "111111"),
+    Customer("", "", "john.email@gmail.com", "+380989990066", ""),
+    Customer("", "", "john.email@gmail.com", "+380989990066", "111111"),
+    Customer("", "Travolta", "", "", ""),
+    Customer("", "Travolta", "", "", "111111"),
+    Customer("", "Travolta", "", "+380989990066", ""),
+    Customer("", "Travolta", "", "+380989990066", "111111"),
+    Customer("", "Travolta", "john.email@gmail.com", "", ""),
+    Customer("", "Travolta", "john.email@gmail.com", "+380989990066", ""),
+    Customer("", "Travolta", "john.email@gmail.com", "+380989990066", "111111"),
+    Customer("John", "", "", "", ""),
+    Customer("John", "", "", "", "111111"),
+    Customer("John", "", "", "+380989990066", ""),
+    Customer("John", "", "", "+380989990066", "111111"),
+    Customer("John", "Travolta", "", "", ""),
+    Customer("John", "Travolta", "", "", "111111"),
+    Customer("John", "Travolta", "", "john.email@gmail.com", ""),
+    Customer("John", "Travolta", "", "john.email@gmail.com", "111111"),
+    Customer("John", "Travolta", "john.email@gmail.com", "", ""),
+    Customer("John", "Travolta", "john.email@gmail.com", "", "111111"),
+    Customer("John", "Travolta", "john.email@gmail.com", "+380989990066", ""),
+]
+
 
 @pytest.mark.parametrize("subscribe", [True, False], ids=["Subscribe=Yes", "Subscribe=No"])
 @pytest.mark.parametrize("new_customer", test_data_subscribe, ids=[repr(x) for x in test_data_subscribe])
@@ -49,15 +78,24 @@ def test_create_customer_password_positive(app, db, new_customer):
     db.delete_customer_by_name_and_lastname(new_customer)
 
 
-@pytest.mark.parametrize("new_customer", test_data_password_negative, ids=[repr(x) for x in test_data_password_negative])
+@pytest.mark.parametrize("new_customer", test_data_password_negative,
+                         ids=[repr(x) for x in test_data_password_negative])
 def test_create_customer_password_negative(app, new_customer):
     app.create_customer(new_customer)
     assert app.is_warning_message_showed("Password")
 
 
-def test_create_customer_personal_info_empty(app):
-    app.create_customer(Customer("", "", "", "", ""))
-    assert app.is_warning_message_showed("First Name")
-    assert app.is_warning_message_showed("Last Name")
-    assert app.is_warning_message_showed("E-mail")
-    assert app.is_warning_message_showed("Telephone")
+@pytest.mark.parametrize("new_customer", test_data_empty_combinations,
+                         ids=[repr(x) for x in test_data_empty_combinations])
+def test_create_customer_empty_combinations(app, new_customer):
+    app.create_customer(new_customer)
+    if new_customer.firstname == "":
+        assert app.is_warning_message_showed("First Name")
+    if new_customer.lastname == "":
+        assert app.is_warning_message_showed("Last Name")
+    if new_customer.email == "":
+        assert app.is_warning_message_showed("E-mail")
+    if new_customer.phone == "":
+        assert app.is_warning_message_showed("Telephone")
+    if new_customer.password == "":
+        assert app.is_warning_message_showed("Password")
