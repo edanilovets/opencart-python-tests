@@ -57,6 +57,7 @@ test_data_empty_combinations = [
 ]
 
 
+@pytest.mark.positive
 @pytest.mark.parametrize("subscribe", [True, False], ids=["Subscribe=Yes", "Subscribe=No"])
 @pytest.mark.parametrize("new_customer", test_data_subscribe, ids=[repr(x) for x in test_data_subscribe])
 def test_create_customer_subscribe_positive(app, db, new_customer, subscribe):
@@ -68,7 +69,7 @@ def test_create_customer_subscribe_positive(app, db, new_customer, subscribe):
     db.delete_customer_by_name_and_lastname(new_customer)
 
 
-@pytest.mark.skip(reason="Test later")
+@pytest.mark.positive
 @pytest.mark.parametrize("new_customer", test_data_password, ids=[repr(x) for x in test_data_password])
 def test_create_customer_password_positive(app, db, new_customer):
     app.create_customer(new_customer)
@@ -79,7 +80,7 @@ def test_create_customer_password_positive(app, db, new_customer):
     db.delete_customer_by_name_and_lastname(new_customer)
 
 
-@pytest.mark.skip(reason="Test later")
+@pytest.mark.negative
 @pytest.mark.parametrize("new_customer", test_data_empty_combinations,
                          ids=[repr(x) for x in test_data_empty_combinations])
 def test_create_customer_empty_combinations(app, new_customer):
@@ -96,7 +97,7 @@ def test_create_customer_empty_combinations(app, new_customer):
         assert app.is_warning_message_showed("Password")
 
 
-@pytest.mark.skip(reason="Test later")
+@pytest.mark.negative
 @pytest.mark.parametrize("new_customer", test_data_password_negative,
                          ids=[repr(x) for x in test_data_password_negative])
 def test_create_customer_password_negative(app, new_customer):

@@ -12,14 +12,6 @@ class Application:
         wd = self.wd
         wd.maximize_window()
 
-    def check_exists_by_link_text(self, link_text):
-        wd = self.wd
-        try:
-            wd.find_element_by_link_text(link_text)
-        except NoSuchElementException:
-            return False
-        return True
-
     def check_exists_by_xpath(self, xpath_selector):
         wd = self.wd
         try:
@@ -37,9 +29,11 @@ class Application:
         xpath = self.config
         self.open_home_page()
         wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
-        if self.check_exists_by_link_text("Login"):
+        if self.check_exists_by_xpath(xpath['top_line']['login']) and \
+                wd.find_element_by_xpath(xpath['top_line']['login']).text == "Login":
             wd.find_element_by_xpath(xpath['top_line']['login']).click()
-        elif self.check_exists_by_link_text("Logout"):
+        elif self.check_exists_by_xpath(xpath['top_line']['logout']) and \
+                wd.find_element_by_xpath(xpath['top_line']['logout']).text == "Logout":
             wd.find_element_by_xpath(xpath['top_line']['logout']).click()
             wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
             wd.find_element_by_xpath(xpath['top_line']['login']).click()
@@ -49,14 +43,14 @@ class Application:
         wd.find_element_by_xpath(xpath['login']['input_email']).send_keys(customer.email)
         wd.find_element_by_xpath(xpath['login']['input_password']).send_keys(customer.password)
         wd.find_element_by_xpath(xpath['login']['btn_login']).click()
-        return True
 
     def logout(self):
         wd = self.wd
         xpath = self.config
         self.open_home_page()
         wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
-        if self.check_exists_by_link_text("Logout"):
+        if self.check_exists_by_xpath(xpath['top_line']['logout']) and \
+                wd.find_element_by_xpath(xpath['top_line']['logout']).text == "Logout":
             wd.find_element_by_xpath(xpath['top_line']['logout']).click()
         else:
             raise NoSuchElementException("You are not logged in.")
@@ -68,9 +62,11 @@ class Application:
 
         wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
 
-        if self.check_exists_by_link_text("Register"):
+        if self.check_exists_by_xpath(xpath['top_line']['register']) and \
+                wd.find_element_by_xpath(xpath['top_line']['register']).text == "Register":
             wd.find_element_by_xpath(xpath['top_line']['register']).click()
-        elif self.check_exists_by_link_text("Logout"):
+        elif self.check_exists_by_xpath(xpath['top_line']['logout']) and \
+                wd.find_element_by_xpath(xpath['top_line']['logout']).text == "Logout":
             wd.find_element_by_xpath(xpath['top_line']['logout']).click()
             wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
             wd.find_element_by_xpath(xpath['top_line']['register']).click()
@@ -122,6 +118,22 @@ class Application:
             warn_message = wd.find_element_by_xpath(xpath['account']['warning_phone']).text
             if warn_message == "Telephone must be between 3 and 32 characters!":
                 return True
+        else:
+            return False
+
+    def is_customer_logged_in(self, customer):
+        wd = self.wd
+        xpath = self.config
+        wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
+        if self.check_exists_by_xpath(xpath['top_line']['account']) and \
+                wd.find_element_by_xpath(xpath['top_line']['account']).text == "My Account":
+            wd.find_element_by_xpath(xpath['top_line']['account']).click()
+            wd.find_element_by_xpath(xpath['account']['edit_account']).click()
+            email = wd.find_element_by_xpath(xpath['account']['form_email']).get_attribute("value")
+            if email == customer.email:
+                return True
+            else:
+                return False
         else:
             return False
 
