@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
-import json
 
 
 class Application:
@@ -31,7 +30,7 @@ class Application:
 
     def open_home_page(self):
         wd = self.wd
-        wd.get("http://localhost:8080/opencart/")
+        wd.get("http://localhost/opencart/")
 
     def login(self, customer):
         wd = self.wd
