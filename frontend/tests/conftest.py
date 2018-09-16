@@ -3,6 +3,8 @@ import json
 from frontend.application.app import Application
 from frontend.application.db import Db
 
+# Alternative version to add tear down fixture
+
 # @pytest.fixture(scope="module")
 # def app(request):
 #     fixture = Application()
@@ -20,10 +22,15 @@ def load_xpath_config(file):
     return config
 
 
+def pytest_addoption(parser):
+    parser.addoption("--browser", action="store", default="chrome", help="browser: chrome, firefox, ie or edge")
+
+
 @pytest.fixture(scope="session")
-def app():
+def app(pytestconfig):
     config = load_xpath_config("xpath.json")
-    fixture = Application(config)
+    browser = pytestconfig.getoption("browser")
+    fixture = Application(config, browser)
     fixture.maximize_window()
     yield fixture
     fixture.destroy()

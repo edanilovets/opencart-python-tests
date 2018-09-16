@@ -1,11 +1,23 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 
 class Application:
 
-    def __init__(self, config):
-        self.wd = webdriver.Chrome()
+    def __init__(self, config, browser):
+        if browser == "chrome":
+            self.wd = webdriver.Chrome()
+        elif browser == "firefox":
+            binary = FirefoxBinary('C:\\Program Files\\Mozilla Firefox\\firefox.exe')
+            self.wd = webdriver.Firefox(firefox_binary=binary)
+        elif browser == "edge":
+            self.wd = webdriver.Edge()
+        elif browser == "ie":
+            self.wd = webdriver.Ie()
+        else:
+            raise ValueError("Unrecognized browser {}".format(browser))
+
         self.config = config
 
     def maximize_window(self):

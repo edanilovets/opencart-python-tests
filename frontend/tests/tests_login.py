@@ -30,4 +30,3 @@ def test_login_not_existing_customer(app):
 def test_logout_if_not_logged_in(app):
     with pytest.raises(NoSuchElementException):
         app.logout()
-
