@@ -34,7 +34,7 @@ class Application:
 
     def open_home_page(self):
         wd = self.wd
-        wd.get("http://localhost/opencart/")
+        wd.get("http://localhost:8080/opencart/")
 
     def login(self, customer):
         wd = self.wd
