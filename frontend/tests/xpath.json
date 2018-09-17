@@ -22,6 +22,7 @@
   "login": {
     "input_email": "//input[@id='input-email']",
     "input_password": "//input[@id='input-password']",
-    "btn_login": "//input[@value='Login']"
+    "btn_login": "//input[@value='Login']",
+    "warning": "//div[@id='account-login']/div[@class='alert alert-danger alert-dismissible']"
   }
 }

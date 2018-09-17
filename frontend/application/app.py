@@ -149,5 +149,14 @@ class Application:
         else:
             return False
 
+    def is_login_warning_message_showed(self):
+        wd = self.wd
+        xpath = self.config
+        warning = wd.find_element_by_xpath(xpath['login']['warning']).get_attribute("innerText")
+        if warning == " Warning: No match for E-Mail Address and/or Password.":
+            return True
+        else:
+            return False
+
     def destroy(self):
         self.wd.quit()
