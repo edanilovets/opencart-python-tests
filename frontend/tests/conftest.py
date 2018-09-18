@@ -1,6 +1,6 @@
 import datetime
 from collections import namedtuple
-
+import os
 import pytest
 import json
 from frontend.application.app import Application
@@ -31,9 +31,11 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope="session")
 def app(pytestconfig):
-    config = load_xpath_config("xpath.json")
+    file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "xpath.json")
+    config = load_xpath_config(file)
     browser = pytestconfig.getoption("browser")
     fixture = Application(config, browser)
+    fixture.maximize_window()
     yield fixture
     fixture.destroy()
 
@@ -46,28 +48,28 @@ def db():
 
 
 # using of built in cache fixture
-Duration = namedtuple('Duration', ['current', 'last'])
-
-
-@pytest.fixture(scope="session")
-def duration_cache(request):
-    key = 'duration/testdurations'
-    d = Duration({}, request.config.cache.get(key, {}))
-    yield d
-    request.config.cache.set(key, d.current)
-
-
-@pytest.fixture(autouse=True)
-def check_duration(request, duration_cache):
-    d = duration_cache
-    nodeid = request.node.nodeid
-    start_time = datetime.datetime.now()
-    yield
-    duration = (datetime.datetime.now() - start_time).total_seconds()
-    d.current[nodeid] = duration
-    if d.last.get(nodeid, None) is not None:
-        error_string = "test duration over 2x last duration"
-        assert duration <= (d.last[nodeid] * 2), error_string
+# Duration = namedtuple('Duration', ['current', 'last'])
+#
+#
+# @pytest.fixture(scope="session")
+# def duration_cache(request):
+#     key = 'duration/testdurations'
+#     d = Duration({}, request.config.cache.get(key, {}))
+#     yield d
+#     request.config.cache.set(key, d.current)
+#
+#
+# @pytest.fixture(autouse=True)
+# def check_duration(request, duration_cache):
+#     d = duration_cache
+#     nodeid = request.node.nodeid
+#     start_time = datetime.datetime.now()
+#     yield
+#     duration = (datetime.datetime.now() - start_time).total_seconds()
+#     d.current[nodeid] = duration
+#     if d.last.get(nodeid, None) is not None:
+#         error_string = "test duration over 2x last duration"
+#         assert duration <= (d.last[nodeid] * 2), error_string
 
 
 # using of built in cache fixture
