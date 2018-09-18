@@ -34,7 +34,6 @@ def app(pytestconfig):
     config = load_xpath_config("xpath.json")
     browser = pytestconfig.getoption("browser")
     fixture = Application(config, browser)
-    fixture.maximize_window()
     yield fixture
     fixture.destroy()
 
