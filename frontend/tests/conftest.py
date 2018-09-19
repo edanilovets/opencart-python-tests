@@ -1,22 +1,8 @@
-import datetime
-from collections import namedtuple
 import os
 import pytest
 import json
 from frontend.application.app import Application
 from frontend.application.db import Db
-
-# Alternative version to add tear down fixture
-
-# @pytest.fixture(scope="module")
-# def app(request):
-#     fixture = Application()
-#
-#     def fin():
-#         fixture.destroy()
-#
-#     request.addfinalizer(fin)
-#     return fixture
 
 
 def load_xpath_config(file):
@@ -46,7 +32,21 @@ def db():
     yield db_fixture
     db_fixture.destroy()
 
+# Alternative version to add tear down fixture
+# @pytest.fixture(scope="module")
+# def app(request):
+#     fixture = Application()
+#
+#     def fin():
+#         fixture.destroy()
+#
+#     request.addfinalizer(fin)
+#     return fixture
 
+
+# Store in cache last run time
+import datetime
+from collections import namedtuple
 # using of built in cache fixture
 # Duration = namedtuple('Duration', ['current', 'last'])
 #

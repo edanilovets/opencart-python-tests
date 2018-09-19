@@ -1,13 +1,17 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.chrome.options import Options
 
 
 class Application:
 
     def __init__(self, config, browser):
         if browser == "chrome":
-            self.wd = webdriver.Chrome()
+            chrome_options = Options()
+            chrome_options.add_argument("--disable-extensions")
+            chrome_options.add_argument("--start-maximized")
+            self.wd = webdriver.Chrome(chrome_options=chrome_options)
         elif browser == "firefox":
             binary = FirefoxBinary('C:\\Program Files\\Mozilla Firefox\\firefox.exe')
             self.wd = webdriver.Firefox(firefox_binary=binary)

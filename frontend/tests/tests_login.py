@@ -38,6 +38,6 @@ def test_logout_if_not_logged_in(app):
         app.logout()
 
 
-def test_login_number_of_login_attempts(app):
+def test_login_number_of_login_attempts():
     pass
 
