@@ -17,7 +17,11 @@
     "warning_password": "//input[@id='input-password']/following-sibling::div[@class='text-danger']",
     "warning_confirm": "//input[@id='input-confirm']/following-sibling::div[@class='text-danger']",
     "edit_account": "//div[@id='content']/ul[1]/li[1]/a",
-    "form_email": "//input[@id='input-email']"
+    "edit_firstname": "//*[@id='input-firstname']",
+    "edit_lastname": "//*[@id='input-lastname']",
+    "edit_phone": "//*[@id='input-telephone']",
+    "edit_email": "//input[@id='input-email']",
+    "edit_continue": "//*[@id='content']/form/div/div[2]/input"
   },
   "login": {
     "input_email": "//input[@id='input-email']",

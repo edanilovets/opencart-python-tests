@@ -107,6 +107,31 @@ class Application:
         wd.find_element_by_xpath(xpath['account']['checkbox_agree']).click()
         wd.find_element_by_xpath(xpath['account']['btn_continue']).click()
 
+    def edit_customer_firstname(self, customer):
+        wd = self.wd
+        xpath = self.config
+        wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
+        wd.find_element_by_xpath(xpath['top_line']['account']).click()
+        wd.find_element_by_xpath(xpath['account']['edit_account']).click()
+        wd.find_element_by_xpath(xpath['account']['edit_firstname']).clear()
+        wd.find_element_by_xpath(xpath['account']['edit_firstname']).send_keys(customer.firstname)
+        wd.find_element_by_xpath(xpath['account']['edit_continue']).click()
+
+    def edit_customer_lastname(self, customer):
+        wd = self.wd
+        xpath = self.config
+        pass
+
+    def edit_customer_email(self, customer):
+        wd = self.wd
+        xpath = self.config
+        pass
+
+    def edit_customer_phone(self, customer):
+        wd = self.wd
+        xpath = self.config
+        pass
+
     def is_warning_message_showed(self, field_name):
         wd = self.wd
         xpath = self.config
@@ -145,7 +170,7 @@ class Application:
                 wd.find_element_by_xpath(xpath['top_line']['account']).text == "My Account":
             wd.find_element_by_xpath(xpath['top_line']['account']).click()
             wd.find_element_by_xpath(xpath['account']['edit_account']).click()
-            email = wd.find_element_by_xpath(xpath['account']['form_email']).get_attribute("value")
+            email = wd.find_element_by_xpath(xpath['account']['edit_email']).get_attribute("value")
             if email == customer.email:
                 return True
             else:

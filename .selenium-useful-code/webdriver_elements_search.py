@@ -1,11 +1,10 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 
 # Chrome options https://peter.sh/experiments/chromium-command-line-switches/
 # Firefox options https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options
 from selenium.webdriver.common.keys import Keys
 
-chrome_options = Options()
+chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--disable-extensions")
 chrome_options.add_argument("--start-maximized")
 # chrome_options.add_argument("")
