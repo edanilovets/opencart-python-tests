@@ -5,23 +5,17 @@ from frontend.application.app import Application
 from frontend.application.db import Db
 
 
-def load_xpath_config(file):
-    with open(file, 'r') as f:
-        config = json.load(f)
-    return config
-
-
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="chrome", help="browser: chrome, firefox, ie or edge")
 
 
 @pytest.fixture(scope="session")
 def app(pytestconfig):
-    file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "xpath.json")
-    config = load_xpath_config(file)
+    file = os.path.join(os.path.dirname(os.path.abspath("..\\..\\__file__")), "frontend\\application\\app_xpath.json")
+    with open(file, 'r') as f:
+        config = json.load(f)
     browser = pytestconfig.getoption("browser")
     fixture = Application(config, browser)
-    fixture.maximize_window()
     yield fixture
     fixture.destroy()
 

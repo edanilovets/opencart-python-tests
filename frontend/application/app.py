@@ -1,20 +1,28 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-from selenium.webdriver.chrome.options import Options
+from frontend.application.login_page import LoginPage
+from frontend.application.register_page import RegisterPage
 
 
 class Application:
 
     def __init__(self, config, browser):
         if browser == "chrome":
-            chrome_options = Options()
+            chrome_options = webdriver.ChromeOptions()
             chrome_options.add_argument("--disable-extensions")
             chrome_options.add_argument("--start-maximized")
+            # chrome_options.add_argument("--headless")
             self.wd = webdriver.Chrome(chrome_options=chrome_options)
         elif browser == "firefox":
+            # using custom profile to start Firefox with
+            firefox_profile = webdriver.FirefoxProfile(
+                "C:\\Users\\Evgeniy Danilovets\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\p0dfg3xg.custom_profile1")
+            firefox_options = webdriver.FirefoxOptions()
+            firefox_options.add_argument("--devtools")
+            # firefox_options.add_argument("--headless")
             binary = FirefoxBinary('C:\\Program Files\\Mozilla Firefox\\firefox.exe')
-            self.wd = webdriver.Firefox(firefox_binary=binary)
+            self.wd = webdriver.Firefox(firefox_binary=binary, options=firefox_options, firefox_profile=firefox_profile)
         elif browser == "edge":
             self.wd = webdriver.Edge()
         elif browser == "ie":
@@ -23,6 +31,9 @@ class Application:
             raise ValueError("Unrecognized browser {}".format(browser))
 
         self.config = config
+
+        # self.login = LoginPage(self)
+        # self.register = RegisterPage(self)
 
     def maximize_window(self):
         wd = self.wd
@@ -40,25 +51,51 @@ class Application:
         wd = self.wd
         wd.get("http://localhost:8080/opencart/")
 
-    def login(self, customer):
+    def open_login_page(self):
         wd = self.wd
         xpath = self.config
-        self.open_home_page()
         wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
         if self.check_exists_by_xpath(xpath['top_line']['login']) and \
                 wd.find_element_by_xpath(xpath['top_line']['login']).text == "Login":
             wd.find_element_by_xpath(xpath['top_line']['login']).click()
-        elif self.check_exists_by_xpath(xpath['top_line']['logout']) and \
-                wd.find_element_by_xpath(xpath['top_line']['logout']).text == "Logout":
-            wd.find_element_by_xpath(xpath['top_line']['logout']).click()
-            wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
-            wd.find_element_by_xpath(xpath['top_line']['login']).click()
         else:
-            raise NoSuchElementException("Cannot find Login/Logout links. Check your UI.")
+            raise NoSuchElementException("Cannot find <Login> link. Check your UI.")
 
+    def open_register_page(self):
+        wd = self.wd
+        xpath = self.config
+        wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
+
+        if self.check_exists_by_xpath(xpath['top_line']['register']) and \
+                wd.find_element_by_xpath(xpath['top_line']['register']).text == "Register":
+            wd.find_element_by_xpath(xpath['top_line']['register']).click()
+        else:
+            raise NoSuchElementException("Cannot find <Register> link. Check you UI.")
+
+    def login(self, customer):
+        wd = self.wd
+        xpath = self.config
+        self.open_home_page()
+        self.open_login_page()
         wd.find_element_by_xpath(xpath['login']['input_email']).send_keys(customer.email)
         wd.find_element_by_xpath(xpath['login']['input_password']).send_keys(customer.password)
         wd.find_element_by_xpath(xpath['login']['btn_login']).click()
+
+    def is_customer_logged_in(self, customer):
+        wd = self.wd
+        xpath = self.config
+        wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
+        if self.check_exists_by_xpath(xpath['top_line']['account']) and \
+                wd.find_element_by_xpath(xpath['top_line']['account']).text == "My Account":
+            wd.find_element_by_xpath(xpath['top_line']['account']).click()
+            wd.find_element_by_xpath(xpath['account']['edit_account']).click()
+            email = wd.find_element_by_xpath(xpath['account']['edit_email']).get_attribute("value")
+            if email == customer.email:
+                return True
+            else:
+                return False
+        else:
+            return False
 
     def logout(self):
         wd = self.wd
@@ -73,21 +110,9 @@ class Application:
 
     def create_customer(self, customer, subscribe=False):
         wd = self.wd
-        self.open_home_page()
         xpath = self.config
-
-        wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
-
-        if self.check_exists_by_xpath(xpath['top_line']['register']) and \
-                wd.find_element_by_xpath(xpath['top_line']['register']).text == "Register":
-            wd.find_element_by_xpath(xpath['top_line']['register']).click()
-        elif self.check_exists_by_xpath(xpath['top_line']['logout']) and \
-                wd.find_element_by_xpath(xpath['top_line']['logout']).text == "Logout":
-            wd.find_element_by_xpath(xpath['top_line']['logout']).click()
-            wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
-            wd.find_element_by_xpath(xpath['top_line']['register']).click()
-        else:
-            raise NoSuchElementException("Cannot find Register/Logout links. Check you UI.")
+        self.open_home_page()
+        self.open_register_page()
 
         def type_by_name(selector, text):
             wd.find_element_by_name(selector).click()
@@ -117,21 +142,6 @@ class Application:
         wd.find_element_by_xpath(xpath['account']['edit_firstname']).send_keys(customer.firstname)
         wd.find_element_by_xpath(xpath['account']['edit_continue']).click()
 
-    def edit_customer_lastname(self, customer):
-        wd = self.wd
-        xpath = self.config
-        pass
-
-    def edit_customer_email(self, customer):
-        wd = self.wd
-        xpath = self.config
-        pass
-
-    def edit_customer_phone(self, customer):
-        wd = self.wd
-        xpath = self.config
-        pass
-
     def is_warning_message_showed(self, field_name):
         wd = self.wd
         xpath = self.config
@@ -159,22 +169,6 @@ class Application:
             warn_message = wd.find_element_by_xpath(xpath['account']['warning_phone']).text
             if warn_message == "Telephone must be between 3 and 32 characters!":
                 return True
-        else:
-            return False
-
-    def is_customer_logged_in(self, customer):
-        wd = self.wd
-        xpath = self.config
-        wd.find_element_by_xpath(xpath['top_line']['my_account']).click()
-        if self.check_exists_by_xpath(xpath['top_line']['account']) and \
-                wd.find_element_by_xpath(xpath['top_line']['account']).text == "My Account":
-            wd.find_element_by_xpath(xpath['top_line']['account']).click()
-            wd.find_element_by_xpath(xpath['account']['edit_account']).click()
-            email = wd.find_element_by_xpath(xpath['account']['edit_email']).get_attribute("value")
-            if email == customer.email:
-                return True
-            else:
-                return False
         else:
             return False
 
