@@ -1,11 +1,3 @@
-# def test_menu_link_by_index(app):
-#     expected_header = "PC"
-#     app.open_home_page()
-#     app.open_menu_item_by_index(i=2)
-#     header = app.get_content_header_by_index(i=2)
-#     assert header == expected_header
-
-
 def test_menu_links_open_correct_pages(app):
     expected_headers = ['PC', 'Mac', 'Macs', 'Windows', 'Mice and Trackballs', 'Monitors', 'Printers', 'Scanners',
                         'Web Cameras', 'Tablets', 'Software', 'Phones & PDAs', 'Cameras', 'test 11', 'test 12',

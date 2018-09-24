@@ -223,15 +223,5 @@ class Application:
                 wd.switch_to.window(current_window)
         return content_headers
 
-    # def open_menu_item_by_index(self, i):
-    #     wd = self.wd
-    #     # xpath = self.config
-    #     # find item of menu with number=i
-    #     item = wd.find_elements_by_xpath("//*[@id='menu']/div[2]/ul/li")[i]
-    #     mouse = ActionChains(wd)
-    #     mouse.move_to_element_with_offset(item, 0, 1)
-    #     # mouse.move_by_offset(0, 40)
-    #     mouse.perform()
-
     def destroy(self):
         self.wd.quit()
