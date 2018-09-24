@@ -1,8 +1,11 @@
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-from frontend.application.login_page import LoginPage
-from frontend.application.register_page import RegisterPage
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 
 class Application:
@@ -35,6 +38,10 @@ class Application:
         # self.login = LoginPage(self)
         # self.register = RegisterPage(self)
 
+    def save_screen_shot(self):
+        wd = self.wd
+        wd.save_screenshot("screen.png")
+
     def maximize_window(self):
         wd = self.wd
         wd.maximize_window()
@@ -42,8 +49,11 @@ class Application:
     def check_exists_by_xpath(self, xpath_selector):
         wd = self.wd
         try:
-            wd.find_element_by_xpath(xpath_selector)
-        except NoSuchElementException:
+            # wait 5 seconds
+            wait = WebDriverWait(wd, 5)
+            wait.until(EC.presence_of_element_located((By.XPATH, xpath_selector)))
+            # wd.find_element_by_xpath(xpath_selector)
+        except TimeoutException:
             return False
         return True
 
@@ -180,6 +190,48 @@ class Application:
             return True
         else:
             return False
+
+    def get_content_headers(self):
+        wd = self.wd
+        content_headers = []
+        current_window = wd.current_window_handle
+        menu_elements = wd.find_elements_by_xpath("//*[@id='menu']/div[2]/ul/li")
+        for element in menu_elements:
+            if element.get_attribute("class") == "dropdown":
+                inner_links = element.find_elements_by_css_selector("div > div > ul > li > a")
+                for inner_link in inner_links:
+                    ActionChains(wd).move_to_element_with_offset(element, 0, 1)\
+                        .move_to_element_with_offset(inner_link, 0, 1)\
+                        .key_down(Keys.CONTROL)\
+                        .click(inner_link)\
+                        .key_up(Keys.CONTROL)\
+                        .perform()
+                    new_window = [window for window in wd.window_handles if window != current_window][0]
+                    wd.switch_to.window(new_window)
+                    header = wd.find_element_by_xpath("//*[@id='content']/h2").text
+                    content_headers.append(header)
+                    wd.close()
+                    wd.switch_to.window(current_window)
+            else:
+                link = element.find_element_by_tag_name("a")
+                ActionChains(wd).key_down(Keys.CONTROL).click(link).key_up(Keys.CONTROL).perform()
+                new_window = [window for window in wd.window_handles if window != current_window][0]
+                wd.switch_to.window(new_window)
+                header = wd.find_element_by_xpath("//*[@id='content']/h2").text
+                content_headers.append(header)
+                wd.close()
+                wd.switch_to.window(current_window)
+        return content_headers
+
+    # def open_menu_item_by_index(self, i):
+    #     wd = self.wd
+    #     # xpath = self.config
+    #     # find item of menu with number=i
+    #     item = wd.find_elements_by_xpath("//*[@id='menu']/div[2]/ul/li")[i]
+    #     mouse = ActionChains(wd)
+    #     mouse.move_to_element_with_offset(item, 0, 1)
+    #     # mouse.move_by_offset(0, 40)
+    #     mouse.perform()
 
     def destroy(self):
         self.wd.quit()

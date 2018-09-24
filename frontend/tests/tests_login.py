@@ -24,6 +24,7 @@ def test_login_existing_customer(customer, app, db):
     app.login(customer)
     assert app.is_customer_logged_in(customer)
     app.logout()
+    # app.save_screen_shot()
 
 
 @pytest.mark.parametrize("customer", test_data_login_negative, ids=[repr(x) for x in test_data_login_negative])

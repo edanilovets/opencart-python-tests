@@ -9,9 +9,7 @@ chrome_options.add_argument("--disable-extensions")
 chrome_options.add_argument("--start-maximized")
 # chrome_options.add_argument("")
 wd = webdriver.Chrome(chrome_options=chrome_options)
-
 wd.get("http://localhost:8080/opencart/")
-
 
 # Getting element properties and attributes
 print(wd.find_element_by_id("menu").value_of_css_property("min-height"))
@@ -35,9 +33,13 @@ input_password.submit()
 login_button = wd.find_element_by_css_selector("#content > div > div:nth-child(2) > div > form > input")
 subscribe_radio = wd.find_element_by_css_selector(
     "#content > form > fieldset > div > div > label:nth-child(2) > input[type='radio']")
-
 print(login_button.is_displayed())
 print(login_button.is_enabled())
 print(subscribe_radio.is_selected())    # only for radio button, options in select, or a checkbox
 
-# wd.quit()
+# Actions
+
+
+
+
+
