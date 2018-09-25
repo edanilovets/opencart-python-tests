@@ -3,6 +3,7 @@ class HomePage:
         self.app = app
         self.selectors = selectors
 
+    # todo: do I need do check existing of element? discover...
     # def check_exists_by_xpath(self, xpath_selector):
     #     wd = self.wd
     #     try:
