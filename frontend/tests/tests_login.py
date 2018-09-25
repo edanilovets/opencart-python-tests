@@ -27,11 +27,11 @@ def test_login_existing_customer(customer, app, db):
     # app.save_screen_shot()
 
 
-@pytest.mark.parametrize("customer", test_data_login_negative, ids=[repr(x) for x in test_data_login_negative])
-def test_login_not_existing_customer(customer, app):
-    app.login(customer)
-    assert not app.is_customer_logged_in(customer)
-    assert app.is_login_warning_message_showed()
+# @pytest.mark.parametrize("customer", test_data_login_negative, ids=[repr(x) for x in test_data_login_negative])
+# def test_login_not_existing_customer(customer, app):
+#     app.login(customer)
+#     assert not app.is_customer_logged_in(customer)
+#     assert app.is_login_warning_message_showed()
 
 
 def test_logout_if_not_logged_in(app):

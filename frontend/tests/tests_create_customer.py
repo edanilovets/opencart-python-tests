@@ -80,24 +80,24 @@ def test_create_customer_password_positive(app, db, new_customer):
     db.delete_customer_by_name_and_lastname(new_customer)
 
 
-@pytest.mark.parametrize("new_customer", test_data_empty_combinations,
-                         ids=[repr(x) for x in test_data_empty_combinations])
-def test_create_customer_empty_combinations(app, new_customer):
-    app.create_customer(new_customer)
-    if new_customer.firstname == "":
-        assert app.is_warning_message_showed("First Name")
-    if new_customer.lastname == "":
-        assert app.is_warning_message_showed("Last Name")
-    if new_customer.email == "":
-        assert app.is_warning_message_showed("E-mail")
-    if new_customer.phone == "":
-        assert app.is_warning_message_showed("Telephone")
-    if new_customer.password == "":
-        assert app.is_warning_message_showed("Password")
+# @pytest.mark.parametrize("new_customer", test_data_empty_combinations,
+#                          ids=[repr(x) for x in test_data_empty_combinations])
+# def test_create_customer_empty_combinations(app, new_customer):
+#     app.create_customer(new_customer)
+#     if new_customer.firstname == "":
+#         assert app.is_warning_message_showed("First Name")
+#     if new_customer.lastname == "":
+#         assert app.is_warning_message_showed("Last Name")
+#     if new_customer.email == "":
+#         assert app.is_warning_message_showed("E-mail")
+#     if new_customer.phone == "":
+#         assert app.is_warning_message_showed("Telephone")
+#     if new_customer.password == "":
+#         assert app.is_warning_message_showed("Password")
 
 
-@pytest.mark.parametrize("new_customer", test_data_password_negative,
-                         ids=[repr(x) for x in test_data_password_negative])
-def test_create_customer_password_negative(app, new_customer):
-    app.create_customer(new_customer)
-    assert app.is_warning_message_showed("Password")
+# @pytest.mark.parametrize("new_customer", test_data_password_negative,
+#                          ids=[repr(x) for x in test_data_password_negative])
+# def test_create_customer_password_negative(app, new_customer):
+#     app.create_customer(new_customer)
+#     assert app.is_warning_message_showed("Password")
