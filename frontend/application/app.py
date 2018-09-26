@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from frontend.pages.account_page import AccountPage
 from frontend.pages.home_page import HomePage
 from frontend.pages.login_page import LoginPage
+from frontend.pages.main_menu_block import MainMenu
 from frontend.pages.register_page import RegisterPage
 
 
@@ -23,13 +24,14 @@ class Application:
             self.wd = webdriver.Chrome(chrome_options=chrome_options)
         elif browser == "firefox":
             # using custom profile to start Firefox with
-            firefox_profile = webdriver.FirefoxProfile(
-                "C:\\Users\\Evgeniy Danilovets\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\p0dfg3xg.custom_profile1")
-            firefox_options = webdriver.FirefoxOptions()
+            # firefox_profile = webdriver.FirefoxProfile(
+            #  "C:\\Users\\Evgeniy Danilovets\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\p0dfg3xg.custom_profile1")
+            # firefox_options = webdriver.FirefoxOptions()
             # firefox_options.add_argument("--devtools")
             # firefox_options.add_argument("--headless")
             binary = FirefoxBinary('C:\\Program Files\\Mozilla Firefox\\firefox.exe')
-            self.wd = webdriver.Firefox(firefox_binary=binary, options=firefox_options, firefox_profile=firefox_profile)
+            # self.wd = webdriver.Firefox(firefox_binary=binary, options=firefox_options, firefox_profile=firefox_profile)
+            self.wd = webdriver.Firefox(firefox_binary=binary)
         elif browser == "edge":
             self.wd = webdriver.Edge()
         elif browser == "ie":
@@ -39,6 +41,7 @@ class Application:
 
         self.wait = WebDriverWait(self.wd, 10)
         self.selectors = selectors
+        self.main_menu_block = MainMenu(self)
         self.home_page = HomePage(self, selectors)
         self.login_page = LoginPage(self, selectors)
         self.register_page = RegisterPage(self, selectors)
@@ -105,7 +108,7 @@ class Application:
         wd = self.wd
         content_headers = []
         current_window = wd.current_window_handle
-        menu_elements = wd.find_elements_by_xpath("//*[@id='menu']/div[2]/ul/li")
+        menu_elements = self.main_menu_block.list_of_menu_elements()
         for element in menu_elements:
             if element.get_attribute("class") == "dropdown":
                 # todo: problem in locator with firefox
@@ -130,7 +133,7 @@ class Application:
                 new_window = [window for window in wd.window_handles if window != current_window][0]
                 wd.switch_to.window(new_window)
                 header = self.wait.until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, "#content > h2:nth-child(1)")))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "#content > h2:nth-child(1)")))
                 content_headers.append(header.text)
                 wd.close()
                 wd.switch_to.window(current_window)

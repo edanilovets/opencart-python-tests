@@ -1,3 +1,6 @@
+from selenium.common.exceptions import NoSuchElementException
+
+
 class RegisterPage:
     def __init__(self, app, selectors):
         self.app = app
@@ -9,8 +12,13 @@ class RegisterPage:
 
     def first_name_warning(self):
         wd = self.app.wd
-        selectors = self.selectors
-        return wd.find_element_by_xpath(selectors['account']['warning_firstname'])
+        try:
+            return wd.find_element_by_css_selector("#account > div:nth-child(3) > div > div")
+        except NoSuchElementException:
+            print("No such element '{}' in DOM".format("#account > div:nth-child(3) > div > div"))
+
+    def is_first_name_warning(self):
+        return True if self.first_name_warning() else False
 
     def last_name(self):
         wd = self.app.wd
@@ -71,3 +79,5 @@ class RegisterPage:
         wd = self.app.wd
         selectors = self.selectors
         return wd.find_element_by_xpath(selectors['account']['btn_continue'])
+
+

@@ -6,7 +6,7 @@ from frontend.application.db import Db
 
 
 def pytest_addoption(parser):
-    parser.addoption("--browser", action="store", default="edge", help="browser: chrome, firefox, ie or edge")
+    parser.addoption("--browser", action="store", default="chrome", help="browser: chrome, firefox, ie or edge")
 
 
 @pytest.fixture(scope="session")
