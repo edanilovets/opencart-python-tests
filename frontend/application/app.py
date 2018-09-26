@@ -1,7 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from frontend.pages.account_page import AccountPage
 from frontend.pages.home_page import HomePage
@@ -23,7 +26,7 @@ class Application:
             firefox_profile = webdriver.FirefoxProfile(
                 "C:\\Users\\Evgeniy Danilovets\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\p0dfg3xg.custom_profile1")
             firefox_options = webdriver.FirefoxOptions()
-            firefox_options.add_argument("--devtools")
+            # firefox_options.add_argument("--devtools")
             # firefox_options.add_argument("--headless")
             binary = FirefoxBinary('C:\\Program Files\\Mozilla Firefox\\firefox.exe')
             self.wd = webdriver.Firefox(firefox_binary=binary, options=firefox_options, firefox_profile=firefox_profile)
@@ -34,6 +37,7 @@ class Application:
         else:
             raise ValueError("Unrecognized browser {}".format(browser))
 
+        self.wait = WebDriverWait(self.wd, 10)
         self.selectors = selectors
         self.home_page = HomePage(self, selectors)
         self.login_page = LoginPage(self, selectors)
@@ -97,7 +101,6 @@ class Application:
         self.account_page.edit_account_btn_continue().click()
 
     # todo: continue to transform code to page objects
-    # todo: analyze opening of tabs
     def get_content_headers(self):
         wd = self.wd
         content_headers = []
@@ -105,27 +108,30 @@ class Application:
         menu_elements = wd.find_elements_by_xpath("//*[@id='menu']/div[2]/ul/li")
         for element in menu_elements:
             if element.get_attribute("class") == "dropdown":
-                inner_links = element.find_elements_by_css_selector("div > div > ul > li > a")
+                # todo: problem in locator with firefox
+                inner_links = element.find_elements_by_tag_name("a")
                 for inner_link in inner_links:
-                    ActionChains(wd).move_to_element_with_offset(element, 0, 1) \
-                        .move_to_element_with_offset(inner_link, 0, 1) \
-                        .key_down(Keys.CONTROL) \
-                        .click(inner_link) \
-                        .key_up(Keys.CONTROL) \
-                        .perform()
-                    new_window = [window for window in wd.window_handles if window != current_window][0]
-                    wd.switch_to.window(new_window)
-                    header = wd.find_element_by_xpath("//*[@id='content']/h2").text
-                    content_headers.append(header)
-                    wd.close()
-                    wd.switch_to.window(current_window)
+                    if inner_link.get_attribute("class") not in ["dropdown-toggle", "see-all"]:
+                        ActionChains(wd).move_to_element(element).perform()
+                        ActionChains(wd).move_to_element(inner_link).perform()
+                        ActionChains(wd).key_down(Keys.CONTROL).click(inner_link).key_up(Keys.CONTROL).perform()
+                        self.wait.until(EC.number_of_windows_to_be(2))
+                        new_window = [window for window in wd.window_handles if window != current_window][0]
+                        wd.switch_to.window(new_window)
+                        header = self.wait.until(
+                            EC.presence_of_element_located((By.CSS_SELECTOR, "#content > h2:nth-child(1)")))
+                        content_headers.append(header.text)
+                        wd.close()
+                        wd.switch_to.window(current_window)
             else:
-                link = element.find_element_by_tag_name("a")
-                ActionChains(wd).key_down(Keys.CONTROL).click(link).key_up(Keys.CONTROL).perform()
+                element = element.find_element_by_tag_name("a")
+                ActionChains(wd).key_down(Keys.CONTROL).click(element).key_up(Keys.CONTROL).perform()
+                self.wait.until(EC.number_of_windows_to_be(2))
                 new_window = [window for window in wd.window_handles if window != current_window][0]
                 wd.switch_to.window(new_window)
-                header = wd.find_element_by_xpath("//*[@id='content']/h2").text
-                content_headers.append(header)
+                header = self.wait.until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, "#content > h2:nth-child(1)")))
+                content_headers.append(header.text)
                 wd.close()
                 wd.switch_to.window(current_window)
         return content_headers
