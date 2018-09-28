@@ -3,19 +3,10 @@ class HomePage:
         self.app = app
         self.selectors = selectors
 
-    # todo: do I need do check existing of element? discover...
-    # def check_exists_by_xpath(self, xpath_selector):
-    #     wd = self.wd
-    #     try:
-    #         wait = WebDriverWait(wd, 5)  # wait 5 seconds
-    #         wait.until(EC.presence_of_element_located((By.XPATH, xpath_selector)))
-    #     except TimeoutException:
-    #         return False
-    #     return True
-
     def open(self):
         wd = self.app.wd
-        wd.get("http://localhost:8080/opencart/")
+        # wd.get("http://localhost:8080/opencart/")
+        wd.get("https://demo.opencart.com")
 
     def topline_my_account(self):
         wd = self.app.wd
