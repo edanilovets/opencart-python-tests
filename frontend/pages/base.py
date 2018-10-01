@@ -95,6 +95,7 @@ class Base(Page):
 
         class CartResult(Region):
             _product_page_link_locator = (By.CSS_SELECTOR, "td.text-left > a")
+            _product_remove_button = (By.CSS_SELECTOR, "td:nth-child(5) > button")
 
             def __repr__(self):
                 return self.name
@@ -103,6 +104,9 @@ class Base(Page):
                 self.find_element(*self._product_page_link_locator).click()
                 from frontend.pages.product import Product
                 return Product(self.page.driver, self.page.base_url).wait_for_page_to_load()
+
+            def click_remove_button(self):
+                self.find_element(*self._product_remove_button).click()
 
             @property
             def name(self):
