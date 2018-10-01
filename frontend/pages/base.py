@@ -1,4 +1,4 @@
-from pypom import Page
+from pypom import Page, Region
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -21,12 +21,29 @@ class Base(Page):
         _my_account_locator = (By.XPATH, "//div[@id='top-links']/ul/li[2]/a")
         _login_locator = (By.XPATH, "//div[@id='top-links']/ul/li[2]/ul/li[2]/a")
         _logout_locator = (By.XPATH, "//div[@id='top-links']/ul/li[2]/ul/li[5]/a")
+        _register_locator = (By.XPATH, "//div[@id='top-links']/ul/li[2]/ul/li[1]/a")
+        _my_account_dropdown_locator = (By.XPATH, "//div[@id='top-links']/ul/li[2]/ul/li[1]/a")
 
+        @property
+        def is_login_menu_item_present(self):
+            return self.is_element_present(*self._login_locator)
+
+        @property
+        def is_logout_menu_item_present(self):
+            return self.is_element_present(*self._logout_locator)
+
+        # top line menu My Account
         def click_my_account(self):
             self.find_element(*self._my_account_locator).click()
 
+        def click_register(self):
+            self.find_element(*self._register_locator).click()
+
         def click_login(self):
             self.find_element(*self._login_locator).click()
+
+        def click_my_account_dropdown(self):
+            self.find_element(*self._my_account_dropdown_locator).click()
 
         def click_logout(self):
             self.find_element(*self._logout_locator).click()
@@ -34,6 +51,9 @@ class Base(Page):
     class Header(Page):
         _search_box_locator = (By.CSS_SELECTOR, "#search > input")
         _cart_locator = (By.CSS_SELECTOR, "#cart > button")
+        _empty_cart_message_locator = (By.CSS_SELECTOR, "#cart > ul > li > p")
+        _cart_result_locator = (By.CSS_SELECTOR, "#cart > ul > li:nth-child(1) > table > tbody > tr")
+        _cart_popup_locator = (By.CSS_SELECTOR, "#cart > ul > li:nth-child(1) > table")
 
         @property
         def is_search_box_present(self):
@@ -46,7 +66,47 @@ class Base(Page):
             from frontend.pages.search import Search
             return Search(self.driver, self.base_url).wait_for_page_to_load()
 
-        # todo: continue to adapt methods
+        @property
+        def is_cart_present(self):
+            return self.is_element_present(*self._cart_locator)
+
+        @property
+        def is_cart_popup_displayed(self):
+            return self.is_element_displayed(*self._cart_popup_locator)
+
+        @property
+        def empty_cart_message(self):
+            return self.find_element(*self._empty_cart_message_locator).text
+
+        def click_on_cart(self):
+            self.find_element(*self._cart_locator).click()
+            self.wait.until(lambda s: self.find_elements(*self._cart_result_locator))
+
+        # todo: continue to implement header methods
+        def number_of_items_in_cart(self):
+            pass
+
+        def price_in_cart(self):
+            pass
+
+        @property
+        def cart_results(self):
+            return [self.CartResult(self, el) for el in self.find_elements(*self._cart_result_locator)]
+
+        class CartResult(Region):
+            _product_page_link_locator = (By.CSS_SELECTOR, "td.text-left > a")
+
+            def __repr__(self):
+                return self.name
+
+            def open_product_page(self):
+                self.find_element(*self._product_page_link_locator).click()
+                from frontend.pages.product import Product
+                return Product(self.page.driver, self.page.base_url).wait_for_page_to_load()
+
+            @property
+            def name(self):
+                return self.find_element(*self._product_page_link_locator).text
 
     class Footer(Page):
         pass

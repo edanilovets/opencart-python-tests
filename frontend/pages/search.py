@@ -36,6 +36,7 @@ class Search(Base):
 
         _product_page_link_locator = (By.CSS_SELECTOR, 'h4 a')
         _product_name_locator = (By.CSS_SELECTOR, 'h4')
+        # _product_add_to_cart_locator = (By.CSS_SELECTOR, 'button:nth-child(1)')
 
         def __repr__(self):
             return self.name
