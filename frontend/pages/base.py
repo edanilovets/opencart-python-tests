@@ -38,6 +38,8 @@ class Base(Page):
 
         def click_register(self):
             self.find_element(*self._register_locator).click()
+            from frontend.pages.register_page import Register
+            return Register(self.driver, self.base_url).wait_for_page_to_load()
 
         def click_login(self):
             self.find_element(*self._login_locator).click()
@@ -112,6 +114,10 @@ class Base(Page):
             @property
             def name(self):
                 return self.find_element(*self._product_page_link_locator).text
+
+        # todo: continue implement menu methods
+        class MainMenu(Region):
+            pass
 
     class Footer(Page):
         pass

@@ -21,3 +21,5 @@ class TestSearch:
         home_page = Home(app.driver, base_url).open()
         search_page = home_page.header.search_for("")
         assert search_page.results_count == 0
+
+    # todo: add test for search from search page form

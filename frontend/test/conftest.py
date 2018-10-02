@@ -1,5 +1,6 @@
 import pytest
 from frontend.application.application import Application
+from frontend.application.db import Db
 
 
 def pytest_addoption(parser):
@@ -17,3 +18,10 @@ def app(pytestconfig):
     fixture = Application(browser)
     yield fixture
     fixture.destroy()
+
+
+@pytest.fixture(scope="session")
+def db():
+    db_fixture = Db("localhost", "opencart", "root", "")
+    yield db_fixture
+    db_fixture.destroy()
