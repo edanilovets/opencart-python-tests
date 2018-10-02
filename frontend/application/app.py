@@ -7,7 +7,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from frontend.pages.account_page import AccountPage
-from frontend.pages.home_page import HomePage
+from frontend.pages.home_page_old import HomePage
 from frontend.pages.login_page import LoginPage
 from frontend.pages.main_menu_block import MainMenu
 from frontend.pages.register_page import RegisterPage
