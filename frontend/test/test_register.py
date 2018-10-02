@@ -1,12 +1,12 @@
-from frontend.model.customer import Customer
 from frontend.pages.home_page import Home
+import pytest
+from frontend.data.register_test_data import valid_customer
 
 
 class TestRegister:
-    def test_register(self, app, db, base_url):
 
-        new_customer = Customer("Name", "Last Name", "test@gmail.com", "80993082980", "111111")
-
+    @pytest.mark.parametrize("new_customer", valid_customer, ids=[repr(x) for x in valid_customer])
+    def test_register(self, new_customer, app, db, base_url):
         home_page = Home(app.driver, base_url).open()
         home_page.topline.click_my_account()
         register_page = home_page.topline.click_register()
@@ -27,3 +27,9 @@ class TestRegister:
 
         assert new_customer in customers
         assert success_page.congratulation_message == "Congratulations! Your new account has been successfully created!"
+
+    def test_register_without_private_policy_checked(self):
+        pass
+
+    def test_register_with_empty_first_name(self):
+        pass
