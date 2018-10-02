@@ -50,6 +50,7 @@ class Base(Page):
 
     class Header(Page):
         _search_box_locator = (By.CSS_SELECTOR, "#search > input")
+        _search_button_locator = (By.CSS_SELECTOR, '#search > span')
         _cart_locator = (By.CSS_SELECTOR, "#cart > button")
         _empty_cart_message_locator = (By.CSS_SELECTOR, "#cart > ul > li > p")
         _cart_result_locator = (By.CSS_SELECTOR, "#cart > ul > li:nth-child(1) > table > tbody > tr")

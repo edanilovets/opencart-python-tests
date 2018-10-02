@@ -7,7 +7,6 @@ from frontend.pages.base import Base
 class Search(Base):
 
     _result_locator = (By.CSS_SELECTOR, '#content div.product-thumb')
-    _search_button_locator = (By.CSS_SELECTOR, '#search > span')
     _showing_pages_locator = (By.CSS_SELECTOR, '#content > div:nth-child(9) > div.col-sm-6.text-right')
     _no_results_locator = (By.CSS_SELECTOR, '#content > p:nth-child(7)')
 
