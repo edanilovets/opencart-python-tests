@@ -13,6 +13,7 @@ class Register(Base):
     _subscribe_yes_locator = (By.XPATH, "//*[@id='content']/form/fieldset[3]/div/div/label[1]/input")
     _private_policy_locator = (By.XPATH, "//*[@id='content']/form/div/div/input[1]")
     _continue_button_locator = (By.CSS_SELECTOR, "#content > form > div > div > input.btn.btn-primary")
+    _alert_danger_locator = (By.CSS_SELECTOR, "#account-register > div.alert.alert-danger.alert-dismissible")
 
     def wait_for_page_to_load(self):
         self.wait.until(lambda _: self.find_element(By.CSS_SELECTOR, "#content"))
@@ -48,7 +49,14 @@ class Register(Base):
     def check_private_policy(self):
         self.find_element(*self._private_policy_locator).click()
 
-    def click_continue(self):
+    def click_continue(self, leave_page=True):
         self.find_element(*self._continue_button_locator).click()
-        from frontend.pages.accout_success import AccountSuccess
-        return AccountSuccess(self.driver, self.base_url).wait_for_page_to_load()
+        if leave_page:
+            from frontend.pages.accout_success import AccountSuccess
+            return AccountSuccess(self.driver, self.base_url).wait_for_page_to_load()
+        else:
+            return self
+
+    @property
+    def alert_danger_message(self):
+        return self.find_element(*self._alert_danger_locator).text
