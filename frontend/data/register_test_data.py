@@ -1,7 +1,28 @@
 from frontend.model.customer import Customer
+import string
+import random
+
+
+def random_password(max_len):
+    symbols = string.ascii_letters + string.digits + string.punctuation
+    # symbols = string.ascii_letters + string.digits
+    return "".join([random.choice(symbols) for _ in range(max_len)])
+
 
 valid_customer = [
     Customer("Name", "Last Name", "test@gmail.com", "80993082980", "111111")
+]
+
+# test data for password from 4 to 20 character
+data_password = [
+    Customer("John", "Travolta", "john.email@gmail.com", "+380989990066", "{}".format(random_password(i)))
+    for i in range(4, 21)
+]
+
+# test data for password negative
+data_password_negative = [
+    Customer("John", "Travolta", "john.email@gmail.com", "+380989990066", "{}".format(random_password(i)))
+    for i in range(3)
 ]
 
 empty_first_name_customer = [

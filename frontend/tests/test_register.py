@@ -1,6 +1,9 @@
 from frontend.pages.home_page import Home
 import pytest
 from frontend.data.register_test_data import valid_customer
+from frontend.data.register_test_data import empty_first_name_customer
+from frontend.data.register_test_data import data_password_negative
+from frontend.data.register_test_data import data_password
 
 
 class TestRegister:
@@ -52,5 +55,29 @@ class TestRegister:
 
         assert register_page.alert_danger_message == "Warning: You must agree to the Privacy Policy!"
 
-    def test_register_with_empty_first_name(self):
+    @pytest.mark.parametrize("new_customer", empty_first_name_customer, ids=[repr(x) for x in empty_first_name_customer])
+    def test_register_with_empty_first_name(self, new_customer, app, base_url):
+        home_page = Home(app.driver, base_url).open()
+        home_page.topline.click_my_account()
+        register_page = home_page.topline.click_register()
+
+        # fill form on register page
+        register_page.set_first_name(new_customer.firstname)
+        register_page.set_last_name(new_customer.lastname)
+        register_page.set_email(new_customer.email)
+        register_page.set_phone(new_customer.phone)
+        register_page.set_password(new_customer.password)
+        register_page.set_confirm(new_customer.password)
+        register_page.check_private_policy()
+        register_page.click_continue(leave_page=False)
+
+        assert register_page.is_first_name_text_danger_present()
+
+    # todo: complete test below
+    @pytest.mark.parametrize("new_customer", data_password, ids=[repr(x) for x in data_password])
+    def test_register_with_different_password_length(self, new_customer, app, base_url):
+        pass
+
+    @pytest.mark.parametrize("new_customer", data_password_negative, ids=[repr(x) for x in data_password_negative])
+    def test_register_with_short_password(self, new_customer, app, base_url):
         pass
