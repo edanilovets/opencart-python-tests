@@ -2,6 +2,8 @@ from pypom import Page, Region
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+from frontend.model.product import ProductOverview
+
 
 class Base(Page):
 
@@ -98,10 +100,9 @@ class Base(Page):
 
         class CartResult(Region):
             _product_page_link_locator = (By.CSS_SELECTOR, "td.text-left > a")
+            _product_qty_locator = (By.CSS_SELECTOR, "td:nth-child(3)")
+            _product_price_locator = (By.CSS_SELECTOR, "td:nth-child(4)")
             _product_remove_button = (By.CSS_SELECTOR, "td:nth-child(5) > button")
-
-            def __repr__(self):
-                return self.name
 
             def open_product_page(self):
                 self.find_element(*self._product_page_link_locator).click()
@@ -112,8 +113,14 @@ class Base(Page):
                 self.find_element(*self._product_remove_button).click()
 
             @property
-            def name(self):
-                return self.find_element(*self._product_page_link_locator).text
+            def product(self):
+                product_name = self.find_element(*self._product_page_link_locator).text
+                qty_text = self.find_element(*self._product_qty_locator).text
+                qty_text = qty_text.replace("x", "")
+                qty_text = qty_text.replace(" ", "")
+                product_qty = int(qty_text)
+                product_price = self.find_element(*self._product_price_locator).text
+                return ProductOverview(name=product_name, price=product_price, qty=product_qty)
 
         # todo: continue implement menu methods
         class MainMenu(Region):
