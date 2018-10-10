@@ -5,3 +5,4 @@ class LinkCrawler(object):
     def collect_links(self, url):
         pass
 
+    # todo: implement this class
