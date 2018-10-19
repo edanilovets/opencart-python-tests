@@ -1,5 +1,7 @@
+# todo: implement test
+
+
 class TestLinks:
-    def test_links(self, base_url):
+    def test_main_menu_links(self, base_url):
         pass
 
-    # todo: implement test
