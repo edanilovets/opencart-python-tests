@@ -43,6 +43,7 @@ empty_first_name_customer = [
     Customer("", "Travolta", "john.email@gmail.com", "+380989990066", "111111")
 ]
 
+
 # todo: create test data
 empty_last_name_customer = []
 empty_email_customer = []
